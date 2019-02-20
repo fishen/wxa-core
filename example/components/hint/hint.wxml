@@ -1,0 +1,1 @@
+<text bind:tap="alert">{{message}}</text>
