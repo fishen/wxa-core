@@ -7,7 +7,7 @@ Build and use WeChat miniprogram core function with typescript.
 
 # Getting started
 
-To enable experimental support for decorators, you must enable the **experimentalDecorators** compiler option either on the command line or in your tsconfig.json, in addition, set **strictPropertyInitialization** to false is necessary.
+To enable experimental support for decorators, you must enable the **experimentalDecorators** compiler option either on the command line or in your tsconfig.json, in addition, set **strictPropertyInitialization** to false is required.
 ```
 {
   "compilerOptions": {
@@ -18,7 +18,7 @@ To enable experimental support for decorators, you must enable the **experimenta
 ```
 
 # App
-Use decorator **app** to mark a app class which must implements interface **IApp**.
+Use decorator **app** to mark a app class which implements interface **IApp**.
 ```
 // app.ts
 import { IApp, app } from "wxa-core";
@@ -32,7 +32,7 @@ export class MyApp implements IApp {
 ```
 
 # Page
-Use decorator **page** to mark a page class which must extends from **BasePage** and implements interface **IPage**.
+Use decorator **page** to mark a page class which extends from **BasePage** and implements interface **IPage**.
 >BasePage has a generic parameter (default is *any*) indicating the data type of current page.
 ```
 // pages/index/model.ts
@@ -56,7 +56,7 @@ export class IndexPage extends BasePage<IndexModel> implements IPage {
 ```
 
 # Component
-Use decorator **component** to mark a component class which must extends from **BaseComponent** and implements interface **IComponent**.
+Use decorator **component** to mark a component class which extends from **BaseComponent** and implements interface **IComponent**.
 
 The properties defined in component param, in addition, we use the **method** decorator to mark as the component's method.
 > BaseComponent has a generic parameter (default is *any*) indicating the data type of current component.
@@ -84,7 +84,7 @@ export class HintComponent extends BaseComponent<{ message: string }> implements
 There are at least three ways to extend pages and components.
 
 ## Inheritance 
-First of ann, we can extend our pages and components using standard object-oriented inheritance which must call the base method by super.
+First of all, we can extend our pages and components using standard object-oriented inheritance which call the base method by super.
 > Be careful when used in asynchronous mode.
 ```
 import { page, BasePage, IPage } from 'wxa-core';
@@ -139,7 +139,7 @@ function mypage(constructor: any) {
     p.onLoad = function (options: Record<string, string>) {
       console.log('overrides.', options);
       // do something;
-      onLoad && onLoad(options);
+      onLoad && onLoad.call(this, options);
     };
     p.onShow = function () {
       console.log(`page '${this.route}' showing.`)

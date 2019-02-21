@@ -6,7 +6,7 @@ function mypage(constructor: any) {
     p.onLoad = function (options: Record<string, string>) {
       console.log('overrides.', options);
       // do something;
-      onLoad && onLoad(options);
+      onLoad && onLoad.call(this, options);
     };
     p.onShow = function () {
       console.log(`page '${this.route}' showing.`)
