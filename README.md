@@ -57,9 +57,10 @@ export class IndexPage extends BasePage<IndexModel> implements IPage {
 
 # Component
 Use decorator **component** to mark a component class which extends from **BaseComponent** and implements interface **IComponent**.
-
-The properties defined in component param, in addition, we use the **method** decorator to mark as the component's method.
 > BaseComponent has a generic parameter (default is *any*) indicating the data type of current component.
+## @method
+The properties defined in component param, in addition, we use the **method** decorator to mark as the component's method.
+
 ```
 // components/hint/hint.ts
 import { IComponent, BaseComponent, component, method } from "wxa-core";
@@ -78,6 +79,39 @@ export class HintComponent extends BaseComponent<{ message: string }> implements
     wx.showToast({ title: this.data.message })
   }
 }
+```
+## @observer(fields: string)
+Data listeners can be used to listen for and respond to changes in any properties and data field.
+Support from the miniprogram base library version **2.6.1**.
+```
+// components/hint/hint.ts
+import { IComponent, BaseComponent, component, observer } from "wxa-core";
+
+@component({
+  properties: {
+    message: String
+  }
+})
+export class HintComponent extends BaseComponent<{ message: string }> implements IComponent {
+  attached() {
+    console.log('hint component attached.')
+    const message = 'Hi, message has been changed!';
+    setTimeout(() => this.setData({ message }), 3000);
+  }
+  @observer('message')
+  messageChanged(msg: string) {
+    console.log('message changed:', msg);
+    // others
+  }
+}
+```
+output:
+```
+app launched.
+hint.ts:21 message changed: Hello World!
+hint.ts:11 hint component attached.
+index.ts:9 index page loaded.
+hint.ts:21 message changed: Hi, message has been changed!
 ```
 # Custom Extensions
 
@@ -155,3 +189,8 @@ export class InheritancePage extends BasePage implements IPage {
   }
 }
 ```
+# Update Logs
+* 1.0.1
+  * add *multipleSlots* option to component options;
+  * add *observer* decorator for componet's data listener;
+

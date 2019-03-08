@@ -1,7 +1,2 @@
-import { app } from './annotations';
-import { IApp } from './app.interface';
-
-export {
-    app,
-    IApp,
-}
+export { app } from './annotations';
+export { IApp } from './app.interface';

@@ -6,8 +6,7 @@ declare function Page(options: IPage): void;
 
 /**
  * 自定义页面装饰器
- * custom decorator to override page members.
- * @param cb 自定义函数用来修改当前页面成员 override function
+ * @param cb 自定义函数用来修改当前页面成员
  */
 export function cpage<P = BasePage>(cb?: (page: P & IPage) => any) {
   return function (constructor: new (...args: any[]) => P & IPage) {
@@ -20,7 +19,6 @@ export function cpage<P = BasePage>(cb?: (page: P & IPage) => any) {
 
 /**
  * 页面装饰器
- * page decorator
  */
 export function page(constructor: new (...args: any[]) => BasePage & IPage) {
   return cpage()(constructor);

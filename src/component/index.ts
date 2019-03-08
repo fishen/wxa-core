@@ -1,15 +1,5 @@
-import { component, method, ccomponent } from './decorators';
-import { BaseComponent } from './component';
-import { IComponent } from './component.interface';
-import { IComponentOptions } from './component.options.interface';
-import { IProperty } from './property.interface';
-
-export {
-    BaseComponent,
-    ccomponent,
-    component,
-    IComponent,
-    IComponentOptions,
-    IProperty,
-    method,
-};
+export { component, method, ccomponent, observer } from './decorators';
+export { BaseComponent } from './component';
+export { IComponent } from './component.interface';
+export { IComponentOptions } from './component.options.interface';
+export { IProperty } from './property.interface';
