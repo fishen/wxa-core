@@ -1,5 +1,5 @@
 // components/hint/hint.ts
-import { IComponent, BaseComponent, component, method } from "wxa-core";
+import { IComponent, BaseComponent, component, method, observer } from "wxa-core";
 
 @component({
   properties: {
@@ -9,9 +9,16 @@ import { IComponent, BaseComponent, component, method } from "wxa-core";
 export class HintComponent extends BaseComponent<{ message: string }> implements IComponent {
   attached() {
     console.log('hint component attached.')
+    const message = 'Hi, message has been changed!';
+    setTimeout(() => this.setData({ message }), 3000);
   }
   @method
   alert() {
     wx.showToast({ title: this.data.message })
+  }
+  @observer('message')
+  messageChanged(msg: string) {
+    console.log('message changed:', msg);
+    // others
   }
 }
