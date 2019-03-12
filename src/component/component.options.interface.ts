@@ -1,4 +1,4 @@
-import { IProperty, PropertyType } from './property.interface';
+import { IProperty, PropertyType } from "./property.interface";
 
 /**
  * 组件装饰器参数
@@ -16,5 +16,5 @@ export interface IComponentOptions<T> extends Record<string, any> {
          * 在组件定义时的选项中启用多slot支持
          */
         multipleSlots?: boolean;
-    }
+    };
 }

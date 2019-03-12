@@ -7,10 +7,10 @@ declare type Predicate<T> = (val: T) => boolean;
  * @param filter 筛选条件
  */
 export function keysOf<T = any>(object: T, filter?: Predicate<string>): string[] {
-    if (!object) return [];
+    if (!object) { return []; }
     const result = [];
     for (const key in object) {
-        if (typeof filter === 'function') {
+        if (typeof filter === "function") {
             if (filter(key)) {
                 result.push(key);
             }
@@ -26,9 +26,10 @@ export function keysOf<T = any>(object: T, filter?: Predicate<string>): string[]
  * @param obj 要投影的对象
  * @param filter 要过滤的条件，可以是函数或者是包含键名的字符串数组
  */
-export function selectObject<T extends Record<string, any> = any>(obj: T, filter: string[] | Predicate<string>): Partial<T> {
-    if (!obj) return obj;
-    if (typeof filter === 'function') {
+export function selectObject<T extends Record<string, any> = any
+>(obj: T, filter: string[] | Predicate<string>): Partial<T> {
+    if (!obj) { return obj; }
+    if (typeof filter === "function") {
         const items = keysOf(obj, filter);
         return selectObject(obj, items);
     } else if (Array.isArray(filter) && filter.length) {

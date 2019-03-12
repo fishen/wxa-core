@@ -1,6 +1,6 @@
-import { selectObject } from '../../utils/object';
-import { IPage } from './page.interface';
-import { BasePage } from './page';
+import { selectObject } from "../utils/object";
+import { BasePage } from "./page";
+import { IPage } from "./page.interface";
 
 declare function Page(options: IPage): void;
 
@@ -9,10 +9,10 @@ declare function Page(options: IPage): void;
  * @param cb 自定义函数用来修改当前页面成员
  */
 export function cpage<P = BasePage>(cb?: (page: P & IPage) => any) {
-  return function (constructor: new (...args: any[]) => P & IPage) {
+  return function(constructor: new (...args: any[]) => P & IPage) {
     const instance = new constructor();
-    const page = typeof cb === 'function' ? cb(instance) : instance;
-    const result = selectObject(page, key => key !== 'constructor');
+    const obj = typeof cb === "function" ? cb(instance) : instance;
+    const result = selectObject(obj, (key) => key !== "constructor");
     Page(result);
   };
 }

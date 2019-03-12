@@ -190,6 +190,10 @@ export class InheritancePage extends BasePage implements IPage {
 }
 ```
 # Update Logs
+* 1.0.2
+  * add tslint;
+  * remove source code to reduce the module size;
+  * add index.d.ts file;
 * 1.0.1
   * add *multipleSlots* option to component options;
   * add *observer* decorator for componet's data listener;

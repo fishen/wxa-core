@@ -1,7 +1,7 @@
-import { selectObject } from '../../utils/object';
-import { IComponentOptions } from './component.options.interface';
-import { IComponent } from './component.interface';
-import { BaseComponent } from './component';
+import { selectObject } from "../utils/object";
+import { BaseComponent } from "./component";
+import { IComponent } from "./component.interface";
+import { IComponentOptions } from "./component.options.interface";
 
 declare function Component(options: IComponent): void;
 
@@ -19,10 +19,10 @@ export function method(target: any, name: string, descriptor: PropertyDescriptor
  * @param fields 要监听字段，比如 'some.subfiel',仅使用通配符'**'可以监听全部。
  */
 export function observer(fields: string) {
-  return function (target: any, _name: string, descriptor: PropertyDescriptor) {
+  return function(target: any, name: string, descriptor: PropertyDescriptor) {
     target.observers = target.observers || {};
     target.observers[fields] = descriptor.value;
-  }
+  };
 }
 
 /**
@@ -31,11 +31,11 @@ export function observer(fields: string) {
  */
 export function ccomponent<C = BaseComponent>(cb?: (component: C & IComponent) => any) {
   return function <T = any>(options?: IComponentOptions<T>) {
-    return function (constructor: new (...args: any[]) => C & IComponent) {
+    return function(constructor: new (...args: any[]) => C & IComponent) {
       const instance = new constructor();
-      const component = cb ? cb(instance) : instance;
+      const obj = cb ? cb(instance) : instance;
       const methods = (instance as any).methods || {};
-      const result = selectObject(component, key => key !== 'constructor' && !(key in methods));
+      const result = selectObject(obj, (key) => key !== "constructor" && !(key in methods));
       Object.assign(result, options);
       Component(result);
     };

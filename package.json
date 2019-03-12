@@ -1,19 +1,28 @@
 {
   "name": "wxa-core",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Build and use WeChat miniprogram core function with typescript.",
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
-    "typescript": "^3.3.3",
+    "dts-bundle": "^0.7.3",
     "ts-loader": "^5.3.3",
+    "tslint": "^5.13.1",
+    "typescript": "^3.3.3",
     "webpack": "^4.29.3",
     "webpack-cli": "^3.2.3"
   },
   "scripts": {
-    "build": "./node_modules/.bin/webpack",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "pack": "npm run build && npm pack"
+    "test": "webpack && mocha --require ts-node/register test/*.ts",
+    "ts": "ts-node",
+    "lint": "tslint -c tslint.json 'src/**/*.ts' -p tsconfig.json",
+    "generate-dts": "tsc src/index.ts -d -t es6 --emitDeclarationOnly --declarationDir dts",
+    "clean-dts": "rm -r dts",
+    "bundle-dts": "dts-bundle --name wxa-core --main dts/index.d.ts --out ../index.d.ts",
+    "dts": "npm run generate-dts&&npm run bundle-dts&&npm run clean-dts",
+    "type-check:watch": "npm run lint -- --watch",
+    "build": "npm run lint&&npm run lint&&webpack",
+    "fix": "tslint --fix 'src/**/*.ts'"
   },
   "repository": {
     "type": "git",
