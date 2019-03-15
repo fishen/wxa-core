@@ -140,7 +140,7 @@ export class InheritancePage extends MyBasePage implements IPage {
 ```
 
 ## Decorators
-Secondly, we can add decorators for local extension
+Secondly, we can add decorators for partial extension
 ```
 import { page, BasePage, IPage } from 'wxa-core';
 
@@ -165,21 +165,23 @@ export class MyPage extends BasePage implements IPage {
 ## Overrides
 At last, we can override pages and components with a custom decorator.
 ```
-import { BasePage, IPage, cpage } from 'wxa-core';
+import { page, BasePage, IPage } from 'wxa-core';
 
-function mypage(constructor: any) {
-  return cpage(p => {
-    const { onLoad } = p;
-    p.onLoad = function (options: Record<string, string>) {
+function mypage<T extends { new(...args: any[]): BasePage & IPage }>(constructor: T) {
+  @page
+  class OverrideClass extends constructor {
+    onLoad(options: any) {
       console.log('overrides.', options);
       // do something;
-      onLoad && onLoad.call(this, options);
-    };
-    p.onShow = function () {
-      console.log(`page '${this.route}' showing.`)
-    };
-    return p;
-  })(constructor);
+      super.onLoad && super.onLoad(options);
+    }
+    onShow() {
+      console.log(`page '${this.route}' showing.`);
+      super.onShow && super.onShow();
+    }
+    
+  }
+  return OverrideClass;
 }
 
 @mypage
@@ -190,6 +192,10 @@ export class InheritancePage extends BasePage implements IPage {
 }
 ```
 # Update Logs
+* 1.1.1
+  * fix a problem where a function is defined as a property in a component
+* 1.1.0
+  * remove cpage and ccomponent decorators.
 * 1.0.2
   * add tslint;
   * remove source code to reduce the module size;

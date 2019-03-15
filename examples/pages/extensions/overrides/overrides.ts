@@ -1,18 +1,20 @@
-import { BasePage, IPage, cpage } from 'wxa-core';
+import { page, BasePage, IPage } from 'wxa-core';
 
-function mypage(constructor: any) {
-  return cpage(p => {
-    const { onLoad } = p;
-    p.onLoad = function (options: Record<string, string>) {
+function mypage<T extends { new(...args: any[]): BasePage & IPage }>(constructor: T) {
+  @page
+  class OverrideClass extends constructor {
+    onLoad(options: any) {
       console.log('overrides.', options);
       // do something;
-      onLoad && onLoad.call(this, options);
-    };
-    p.onShow = function () {
-      console.log(`page '${this.route}' showing.`)
-    };
-    return p;
-  })(constructor);
+      super.onLoad && super.onLoad(options);
+    }
+    onShow() {
+      console.log(`page '${this.route}' showing.`);
+      super.onShow && super.onShow();
+    }
+    
+  }
+  return OverrideClass;
 }
 
 @mypage

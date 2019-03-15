@@ -12,7 +12,7 @@ declare module 'wxa-core/app/index' {
 }
 
 declare module 'wxa-core/component/index' {
-    export { component, method, ccomponent, observer } from "wxa-core/component/decorators";
+    export { component, method, observer } from "wxa-core/component/decorators";
     export { BaseComponent } from "wxa-core/component/component";
     export { IComponent } from "wxa-core/component/component.interface";
     export { IComponentOptions } from "wxa-core/component/component.options.interface";
@@ -20,7 +20,7 @@ declare module 'wxa-core/component/index' {
 }
 
 declare module 'wxa-core/page/index' {
-    export { page, cpage } from "wxa-core/page/decorators";
+    export { page } from "wxa-core/page/decorators";
     export { IPage } from "wxa-core/page/page.interface";
     export { BasePage } from "wxa-core/page/page";
 }
@@ -96,7 +96,6 @@ declare module 'wxa-core/app/app.interface' {
 }
 
 declare module 'wxa-core/component/decorators' {
-    import { BaseComponent } from "wxa-core/component/component";
     import { IComponent } from "wxa-core/component/component.interface";
     import { IComponentOptions } from "wxa-core/component/component.options.interface";
     /**
@@ -110,15 +109,10 @@ declare module 'wxa-core/component/decorators' {
         */
     export function observer(fields: string): (target: any, name: string, descriptor: PropertyDescriptor) => void;
     /**
-        * 自定义装饰器
-        * @param cb 自定义函数用来修改当前组件成员
-        */
-    export function ccomponent<C = BaseComponent>(cb?: (component: C & IComponent) => any): <T = any>(options?: IComponentOptions<T>) => (constructor: new (...args: any[]) => C & IComponent) => void;
-    /**
         * 组件装饰器
         * @param options 组件装饰器参数
         */
-    export function component<T = any>(options?: IComponentOptions<T>): (constructor: new (...args: any[]) => BaseComponent<any> & IComponent) => void;
+    export function component<T = any>(options?: IComponentOptions<T>): (constructor: new (...args: any[]) => IComponent) => void;
 }
 
 declare module 'wxa-core/component/component' {
@@ -181,26 +175,6 @@ declare module 'wxa-core/component/component.interface' {
                 */
             behaviors?: string[];
             /**
-                * 组件生命周期函数，在组件实例刚刚被创建时执行，注意此时不能调用 setData ，参见 组件生命周期
-                */
-            created?: () => void;
-            /**
-                * 组件生命周期函数，在组件实例进入页面节点树时执行，参见 组件生命周期
-                */
-            attached?: () => void;
-            /**
-                * 组件生命周期函数，在组件布局完成后执行，参见 组件生命周期
-                */
-            ready?: () => void;
-            /**
-                * 组件生命周期函数，在组件实例被移动到节点树另一个位置时执行，参见 组件生命周期
-                */
-            moved?: () => void;
-            /**
-                * 组件生命周期函数，在组件实例被从页面节点树移除时执行，参见 组件生命周期
-                */
-            detached?: () => void;
-            /**
                 * 组件间关系定义，参见 组件间关系
                 */
             relations?: object;
@@ -224,6 +198,26 @@ declare module 'wxa-core/component/component.interface' {
                 * 定义段过滤器，用于自定义组件扩展，参见 自定义组件扩展
                 */
             definitionFilter?: () => void;
+            /**
+                * 组件生命周期函数，在组件实例刚刚被创建时执行，注意此时不能调用 setData ，参见 组件生命周期
+                */
+            created?(): void;
+            /**
+                * 组件生命周期函数，在组件实例进入页面节点树时执行，参见 组件生命周期
+                */
+            attached?(): void;
+            /**
+                * 组件生命周期函数，在组件布局完成后执行，参见 组件生命周期
+                */
+            ready?(): void;
+            /**
+                * 组件生命周期函数，在组件实例被移动到节点树另一个位置时执行，参见 组件生命周期
+                */
+            moved?(): void;
+            /**
+                * 组件生命周期函数，在组件实例被从页面节点树移除时执行，参见 组件生命周期
+                */
+            detached?(): void;
     }
 }
 
@@ -275,13 +269,8 @@ declare module 'wxa-core/page/decorators' {
     import { BasePage } from "wxa-core/page/page";
     import { IPage } from "wxa-core/page/page.interface";
     /**
-        * 自定义页面装饰器
-        * @param cb 自定义函数用来修改当前页面成员
-        */
-    export function cpage<P = BasePage>(cb?: (page: P & IPage) => any): (constructor: new (...args: any[]) => P & IPage) => void;
-    /**
-        * 页面装饰器
-        */
+      * 页面装饰器
+      */
     export function page(constructor: new (...args: any[]) => BasePage & IPage): void;
 }
 

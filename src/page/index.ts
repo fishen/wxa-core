@@ -1,3 +1,3 @@
-export { page, cpage } from "./decorators";
+export { page } from "./decorators";
 export { IPage } from "./page.interface";
 export { BasePage } from "./page";

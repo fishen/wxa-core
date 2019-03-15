@@ -1,5 +1,4 @@
 import { selectObject } from "../utils/object";
-import { BaseComponent } from "./component";
 import { IComponent } from "./component.interface";
 import { IComponentOptions } from "./component.options.interface";
 
@@ -26,26 +25,15 @@ export function observer(fields: string) {
 }
 
 /**
- * 自定义装饰器
- * @param cb 自定义函数用来修改当前组件成员
- */
-export function ccomponent<C = BaseComponent>(cb?: (component: C & IComponent) => any) {
-  return function <T = any>(options?: IComponentOptions<T>) {
-    return function(constructor: new (...args: any[]) => C & IComponent) {
-      const instance = new constructor();
-      const obj = cb ? cb(instance) : instance;
-      const methods = (instance as any).methods || {};
-      const result = selectObject(obj, (key) => key !== "constructor" && !(key in methods));
-      Object.assign(result, options);
-      Component(result);
-    };
-  };
-}
-
-/**
  * 组件装饰器
  * @param options 组件装饰器参数
  */
 export function component<T = any>(options?: IComponentOptions<T>) {
-  return ccomponent()(options);
+  return function(constructor: new (...args: any[]) => IComponent) {
+    const instance = new constructor();
+    const methods = (instance as any).methods || {};
+    const result = selectObject(instance, (key) => key !== "constructor" && !(key in methods));
+    Object.assign(result, options);
+    Component(result);
+  };
 }
