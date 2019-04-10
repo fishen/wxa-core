@@ -1,6 +1,6 @@
-import { page, BasePage, IPage } from 'wxa-core';
+import { page, BasePage } from 'wxa-core';
 
-function mypage<T extends { new(...args: any[]): BasePage & IPage }>(constructor: T) {
+function mypage<T extends { new(...args: any[]): BasePage }>(constructor: T) {
   @page
   class OverrideClass extends constructor {
     onLoad(options: any) {
@@ -18,7 +18,7 @@ function mypage<T extends { new(...args: any[]): BasePage & IPage }>(constructor
 }
 
 @mypage
-export class InheritancePage extends BasePage implements IPage {
+export class InheritancePage extends BasePage {
   onLoad(_options: Record<string, string>) {
     console.log('overrides page loaded.');
   }

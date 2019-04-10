@@ -18,13 +18,13 @@ To enable experimental support for decorators, you must enable the **experimenta
 ```
 
 # App
-Use decorator **app** to mark a app class which implements interface **IApp**.
+Use decorator **app** to mark a app class which extends from **BaseApp**.
 ```
 // app.ts
-import { IApp, app } from "wxa-core";
+import { BaseApp, app } from "wxa-core";
 
 @app
-export class MyApp implements IApp {
+export class MyApp extends BaseApp {
   onLaunch() {
     console.log('app launched.');
   }
@@ -32,7 +32,7 @@ export class MyApp implements IApp {
 ```
 
 # Page
-Use decorator **page** to mark a page class which extends from **BasePage** and implements interface **IPage**.
+Use decorator **page** to mark a page class which extends from **BasePage**.
 >BasePage has a generic parameter (default is *any*) indicating the data type of current page.
 ```
 // pages/index/model.ts
@@ -43,11 +43,11 @@ export class IndexModel {
 
 ```
 // pages/index/index.ts
-import { page, BasePage, IPage } from 'wxa-core';
+import { page, BasePage } from 'wxa-core';
 import { IndexModel } from './model';
 
 @page
-export class IndexPage extends BasePage<IndexModel> implements IPage {
+export class IndexPage extends BasePage<IndexModel> {
   data = new IndexModel();
   onLoad() {
     console.log('index page loaded.');
@@ -56,21 +56,21 @@ export class IndexPage extends BasePage<IndexModel> implements IPage {
 ```
 
 # Component
-Use decorator **component** to mark a component class which extends from **BaseComponent** and implements interface **IComponent**.
+Use decorator **component** to mark a component class which extends from **BaseComponent**.
 > BaseComponent has a generic parameter (default is *any*) indicating the data type of current component.
 ## @method
 The properties defined in component param, in addition, we use the **method** decorator to mark as the component's method.
 
 ```
 // components/hint/hint.ts
-import { IComponent, BaseComponent, component, method } from "wxa-core";
+import { BaseComponent, component, method } from "wxa-core";
 
 @component({
   properties: {
     message: String
   }
 })
-export class HintComponent extends BaseComponent<{ message: string }> implements IComponent {
+export class HintComponent extends BaseComponent<{ message: string }> {
   attached() {
     console.log('hint component attached.')
   }
@@ -85,14 +85,14 @@ Data listeners can be used to listen for and respond to changes in any propertie
 Support from the miniprogram base library version **2.6.1**.
 ```
 // components/hint/hint.ts
-import { IComponent, BaseComponent, component, observer } from "wxa-core";
+import { BaseComponent, component, observer } from "wxa-core";
 
 @component({
   properties: {
     message: String
   }
 })
-export class HintComponent extends BaseComponent<{ message: string }> implements IComponent {
+export class HintComponent extends BaseComponent<{ message: string }> {
   attached() {
     console.log('hint component attached.')
     const message = 'Hi, message has been changed!';
@@ -121,9 +121,9 @@ There are at least three ways to extend pages and components.
 First of all, we can extend our pages and components using standard object-oriented inheritance which call the base method by super.
 > Be careful when used in asynchronous mode.
 ```
-import { page, BasePage, IPage } from 'wxa-core';
+import { page, BasePage } from 'wxa-core';
 
-export class MyBasePage<T=any> extends BasePage<T> implements IPage {
+export class MyBasePage<T=any> extends BasePage<T> {
   onLoad(options: any) {
     console.log('inheritance.', options);
     // do something;
@@ -131,7 +131,7 @@ export class MyBasePage<T=any> extends BasePage<T> implements IPage {
 }
 
 @page
-export class InheritancePage extends MyBasePage implements IPage {
+export class InheritancePage extends MyBasePage {
   onLoad(options: Record<string, string>) {
     super.onLoad(options);
     console.log('inheritance page loaded.');
@@ -142,7 +142,7 @@ export class InheritancePage extends MyBasePage implements IPage {
 ## Decorators
 Secondly, we can add decorators for partial extension
 ```
-import { page, BasePage, IPage } from 'wxa-core';
+import { page, BasePage } from 'wxa-core';
 
 function preLoad(_target: any, _name: string, descriptor: PropertyDescriptor) {
   const raw = descriptor.value;
@@ -154,7 +154,7 @@ function preLoad(_target: any, _name: string, descriptor: PropertyDescriptor) {
 }
 
 @page
-export class MyPage extends BasePage implements IPage {
+export class MyPage extends BasePage {
   @preLoad
   onLoad(_options: Record<string, string>) {
     console.log('decorators page loaded.');
@@ -165,9 +165,9 @@ export class MyPage extends BasePage implements IPage {
 ## Overrides
 At last, we can override pages and components with a custom decorator.
 ```
-import { page, BasePage, IPage } from 'wxa-core';
+import { page, BasePage } from 'wxa-core';
 
-function mypage<T extends { new(...args: any[]): BasePage & IPage }>(constructor: T) {
+function mypage<T extends { new(...args: any[]): BasePage }>(constructor: T) {
   @page
   class OverrideClass extends constructor {
     onLoad(options: any) {
@@ -185,13 +185,16 @@ function mypage<T extends { new(...args: any[]): BasePage & IPage }>(constructor
 }
 
 @mypage
-export class InheritancePage extends BasePage implements IPage {
+export class InheritancePage extends BasePage {
   onLoad(_options: Record<string, string>) {
     console.log('overrides page loaded.');
   }
 }
 ```
 # Update Logs
+* 1.2.0
+  * remove interface(IApp, IComponent, IPage);
+  * add base app class *BaseApp*;
 * 1.1.1
   * fix a problem where a function is defined as a property in a component
 * 1.1.0

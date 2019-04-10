@@ -1,6 +1,6 @@
-import { page, BasePage, IPage } from 'wxa-core';
+import { page, BasePage } from 'wxa-core';
 
-export class MyBasePage<T=any> extends BasePage<T> implements IPage {
+export class MyBasePage<T=any> extends BasePage<T> {
   onLoad(options: any) {
     console.log('inheritance.', options);
     // do something;
@@ -8,7 +8,7 @@ export class MyBasePage<T=any> extends BasePage<T> implements IPage {
 }
 
 @page
-export class InheritancePage extends MyBasePage implements IPage {
+export class InheritancePage extends MyBasePage {
   onLoad(options: Record<string, string>) {
     super.onLoad(options);
     console.log('inheritance page loaded.');

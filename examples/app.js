@@ -1,4 +1,17 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -7,8 +20,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var wxa_core_1 = require("wxa-core");
-var MyApp = (function () {
+console.log(wxa_core_1.BaseApp);
+var MyApp = (function (_super) {
+    __extends(MyApp, _super);
     function MyApp() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     MyApp.prototype.onLaunch = function () {
         console.log('app launched.');
@@ -17,6 +33,6 @@ var MyApp = (function () {
         wxa_core_1.app
     ], MyApp);
     return MyApp;
-}());
+}(wxa_core_1.BaseApp));
 exports.default = MyApp;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYXBwLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiYXBwLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7O0FBQ0EscUNBQXFDO0FBRXJDO0lBQUE7SUFJQSxDQUFDO0lBSEMsd0JBQVEsR0FBUjtRQUNFLE9BQU8sQ0FBQyxHQUFHLENBQUMsZUFBZSxDQUFDLENBQUM7SUFDL0IsQ0FBQztJQUhrQixLQUFLO1FBRHpCLGNBQUc7T0FDaUIsS0FBSyxDQUl6QjtJQUFELFlBQUM7Q0FBQSxBQUpELElBSUM7a0JBSm9CLEtBQUsiLCJzb3VyY2VzQ29udGVudCI6WyIvLyBhcHAudHNcbmltcG9ydCB7IElBcHAsIGFwcCB9IGZyb20gXCJ3eGEtY29yZVwiO1xuQGFwcFxuZXhwb3J0IGRlZmF1bHQgY2xhc3MgTXlBcHAgaW1wbGVtZW50cyBJQXBwIHtcbiAgb25MYXVuY2goKSB7XG4gICAgY29uc29sZS5sb2coJ2FwcCBsYXVuY2hlZC4nKTtcbiAgfVxufSJdfQ==
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYXBwLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiYXBwLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQUNBLHFDQUF3QztBQUN4QyxPQUFPLENBQUMsR0FBRyxDQUFDLGtCQUFPLENBQUMsQ0FBQztBQUdyQjtJQUFtQyx5QkFBTztJQUExQzs7SUFJQSxDQUFDO0lBSEMsd0JBQVEsR0FBUjtRQUNFLE9BQU8sQ0FBQyxHQUFHLENBQUMsZUFBZSxDQUFDLENBQUM7SUFDL0IsQ0FBQztJQUhrQixLQUFLO1FBRHpCLGNBQUc7T0FDaUIsS0FBSyxDQUl6QjtJQUFELFlBQUM7Q0FBQSxBQUpELENBQW1DLGtCQUFPLEdBSXpDO2tCQUpvQixLQUFLIiwic291cmNlc0NvbnRlbnQiOlsiLy8gYXBwLnRzXG5pbXBvcnQgeyBCYXNlQXBwLCBhcHAgfSBmcm9tIFwid3hhLWNvcmVcIjtcbmNvbnNvbGUubG9nKEJhc2VBcHApO1xuXG5AYXBwXG5leHBvcnQgZGVmYXVsdCBjbGFzcyBNeUFwcCBleHRlbmRzIEJhc2VBcHAge1xuICBvbkxhdW5jaCgpIHtcbiAgICBjb25zb2xlLmxvZygnYXBwIGxhdW5jaGVkLicpO1xuICB9XG59Il19

@@ -1,8 +1,8 @@
 import { selectObject } from "../utils/object";
-import { IComponent } from "./component.interface";
+import { BaseComponent } from "./component";
 import { IComponentOptions } from "./component.options.interface";
 
-declare function Component(options: IComponent): void;
+declare function Component(options: any): void;
 
 /**
  * 将当前成员标记为组件的方法
@@ -29,7 +29,7 @@ export function observer(fields: string) {
  * @param options 组件装饰器参数
  */
 export function component<T = any>(options?: IComponentOptions<T>) {
-  return function(constructor: new (...args: any[]) => IComponent) {
+  return function(constructor: new (...args: any[]) => BaseComponent) {
     const instance = new constructor();
     const methods = (instance as any).methods || {};
     const result = selectObject(instance, (key) => key !== "constructor" && !(key in methods));

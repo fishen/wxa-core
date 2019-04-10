@@ -1,9 +1,9 @@
 import { selectObject } from "../utils/object";
-import { IApp } from "./app.interface";
+import { BaseApp } from "./app";
 
-declare function App(options: IApp): void;
+declare function App(options: any): void;
 
-export function app(constructor: new (...args: any[]) => IApp) {
+export function app(constructor: new (...args: any[]) => BaseApp) {
     const instance = new constructor();
     const result = selectObject(instance, (key) => key !== "constructor");
     App(result);

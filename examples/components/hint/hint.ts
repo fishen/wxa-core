@@ -1,12 +1,12 @@
 // components/hint/hint.ts
-import { IComponent, BaseComponent, component, method, observer } from "wxa-core";
+import { BaseComponent, component, method, observer } from "wxa-core";
 
 @component({
   properties: {
     message: String
   }
 })
-export class HintComponent extends BaseComponent<{ message: string }> implements IComponent {
+export class HintComponent extends BaseComponent<{ message: string }>{
   attached() {
     console.log('hint component attached.')
     const message = 'Hi, message has been changed!';

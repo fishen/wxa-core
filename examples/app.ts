@@ -1,7 +1,9 @@
 // app.ts
-import { IApp, app } from "wxa-core";
+import { BaseApp, app } from "wxa-core";
+console.log(BaseApp);
+
 @app
-export default class MyApp implements IApp {
+export default class MyApp extends BaseApp {
   onLaunch() {
     console.log('app launched.');
   }
