@@ -58,6 +58,19 @@ export class IndexPage extends BasePage<IndexModel> {
 # Component
 Use decorator **component** to mark a component class which extends from **BaseComponent**.
 > BaseComponent has a generic parameter (default is *any*) indicating the data type of current component.
+## @bind
+By default, custom component's properties will be lost, using the **@bind** decorator to maintain property bindings.
+```
+@component()
+export class MyComponent extends BaseComponent {
+  @bind
+  customProp:string;
+  @bind
+  customFunc(){
+
+  }
+}
+```
 ## @method
 The properties defined in component param, in addition, we use the **method** decorator to mark as the component's method.
 
@@ -113,85 +126,9 @@ hint.ts:11 hint component attached.
 index.ts:9 index page loaded.
 hint.ts:21 message changed: Hi, message has been changed!
 ```
-# Custom Extensions
-
-There are at least three ways to extend pages and components.
-
-## Inheritance 
-First of all, we can extend our pages and components using standard object-oriented inheritance which call the base method by super.
-> Be careful when used in asynchronous mode.
-```
-import { page, BasePage } from 'wxa-core';
-
-export class MyBasePage<T=any> extends BasePage<T> {
-  onLoad(options: any) {
-    console.log('inheritance.', options);
-    // do something;
-  }
-}
-
-@page
-export class InheritancePage extends MyBasePage {
-  onLoad(options: Record<string, string>) {
-    super.onLoad(options);
-    console.log('inheritance page loaded.');
-  }
-}
-```
-
-## Decorators
-Secondly, we can add decorators for partial extension
-```
-import { page, BasePage } from 'wxa-core';
-
-function preLoad(_target: any, _name: string, descriptor: PropertyDescriptor) {
-  const raw = descriptor.value;
-  descriptor.value = function (options: any) {
-    console.log('decorators.', options);
-    // do something;
-    raw.call(this, options);
-  }
-}
-
-@page
-export class MyPage extends BasePage {
-  @preLoad
-  onLoad(_options: Record<string, string>) {
-    console.log('decorators page loaded.');
-  }
-}
-```
-
-## Overrides
-At last, we can override pages and components with a custom decorator.
-```
-import { page, BasePage } from 'wxa-core';
-
-function mypage<T extends { new(...args: any[]): BasePage }>(constructor: T) {
-  @page
-  class OverrideClass extends constructor {
-    onLoad(options: any) {
-      console.log('overrides.', options);
-      // do something;
-      super.onLoad && super.onLoad(options);
-    }
-    onShow() {
-      console.log(`page '${this.route}' showing.`);
-      super.onShow && super.onShow();
-    }
-    
-  }
-  return OverrideClass;
-}
-
-@mypage
-export class InheritancePage extends BasePage {
-  onLoad(_options: Record<string, string>) {
-    console.log('overrides page loaded.');
-  }
-}
-```
 # Update Logs
+* 1.2.1
+  * add decorator *bind* for componet;
 * 1.2.0
   * remove interface(IApp, IComponent, IPage);
   * add base app class *BaseApp*;

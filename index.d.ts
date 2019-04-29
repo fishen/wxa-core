@@ -89,125 +89,6 @@ declare module "wxa-core/src/app/index" {
     export { app } from "wxa-core/src/app/annotations";
     export { BaseApp } from "wxa-core/src/app/app";
 }
-declare module "wxa-core/src/component/base" {
-    /**
-     * 组件基础类型，可以被页面和组件共用
-     * Component data, including internal data and property values
-     */
-    export abstract class Base<D> implements Record<string, any> {
-        /**
-         * 组件数据，包括内部数据和属性值
-         */
-        data: D;
-        /**
-         * Set data and perform view layer rendering
-         * 设置data并执行视图层渲染
-         * @param data 这次要改变的数据 The data to be changed this time
-         * @param callback setData引起的界面更新渲染完毕后的回调函数 The callback function after setData been called.
-         */
-        setData: <K extends keyof D>(data: D | Pick<D, K> | Record<string, any>, callback?: () => void) => void;
-    }
-}
-declare module "wxa-core/src/component/component" {
-    import { Base } from "wxa-core/src/component/base";
-    /**
-     * 组件基础类型，包含组件所有可用的属性和方法
-     */
-    export abstract class BaseComponent<D = any> extends Base<D> implements Record<string, any> {
-        /**
-         * 类似于mixins和traits的组件间代码复用机制，参见 behaviors
-         */
-        behaviors?: string[];
-        /**
-         * 组件间关系定义，参见 组件间关系
-         */
-        relations?: object;
-        /**
-         * 组件接受的外部样式类，参见 外部样式类
-         */
-        externalClasses?: string[];
-        /**
-         * 一些选项（文档中介绍相关特性时会涉及具体的选项设置，这里暂不列举）
-         */
-        options?: object;
-        /**
-         * 组件生命周期声明对象，参见 组件生命周期
-         */
-        lifetimes?: object;
-        /**
-         * 组件所在页面的生命周期声明对象，支持页面的 show 、 hide 等生命周期，参见 组件生命周期
-         */
-        pageLifetimes?: object;
-        /**
-         * 定义段过滤器，用于自定义组件扩展，参见 自定义组件扩展
-         */
-        definitionFilter?: () => void;
-        /**
-         * 组件的文件路径
-         */
-        is: string;
-        /**
-         * 节点id
-         */
-        id: string;
-        /**
-         * 节点dataset
-         */
-        dataset: string;
-        /**
-         * 检查组件是否具有 behavior （检查时会递归检查被直接或间接引入的所有behavior）
-         */
-        hasBehavior: (behavior: any) => boolean;
-        /**
-         * 触发事件，参见 组件事件
-         */
-        triggerEvent: (name: string, detail?: object, options?: object) => void;
-        /**
-         * 创建一个 SelectorQuery 对象，选择器选取范围为这个组件实例内
-         */
-        createSelectorQuery: () => any;
-        /**
-         * 创建一个 IntersectionObserver 对象，选择器选取范围为这个组件实例内
-         */
-        createIntersectionObserver: () => any;
-        /**
-         * 使用选择器选择组件实例节点，返回匹配到的第一个组件实例对象（会被 wx://component-export 影响）
-         */
-        selectComponent: (selector: string) => any;
-        /**
-         * 使用选择器选择组件实例节点，返回匹配到的全部组件实例对象组成的数组
-         */
-        selectAllComponents: (selector: string) => any[];
-        /**
-         * 获取这个关系所对应的所有关联节点，参见 组件间关系
-         */
-        getRelationNodes: (relationKey: string) => any;
-        /**
-         * 立刻执行 callback ，其中的多个 setData 之间不会触发界面绘制（只有某些特殊场景中需要，如用于在不同组件同时 setData 时进行界面绘制同步）
-         */
-        groupSetData: (callback: () => void) => void;
-        /**
-         * 组件生命周期函数，在组件实例刚刚被创建时执行，注意此时不能调用 setData ，参见 组件生命周期
-         */
-        created?(): void;
-        /**
-         * 组件生命周期函数，在组件实例进入页面节点树时执行，参见 组件生命周期
-         */
-        attached?(): void;
-        /**
-         * 组件生命周期函数，在组件布局完成后执行，参见 组件生命周期
-         */
-        ready?(): void;
-        /**
-         * 组件生命周期函数，在组件实例被移动到节点树另一个位置时执行，参见 组件生命周期
-         */
-        moved?(): void;
-        /**
-         * 组件生命周期函数，在组件实例被从页面节点树移除时执行，参见 组件生命周期
-         */
-        detached?(): void;
-    }
-}
 declare module "wxa-core/src/component/property.interface" {
     type PropertyType = String | Number | Boolean | Object | any[] | null;
     export { PropertyType };
@@ -251,7 +132,6 @@ declare module "wxa-core/src/component/component.options.interface" {
     }
 }
 declare module "wxa-core/src/component/decorators" {
-    import { BaseComponent } from "wxa-core/src/component/component";
     import { IComponentOptions } from "wxa-core/src/component/component.options.interface";
     /**
      * 将当前成员标记为组件的方法
@@ -267,13 +147,141 @@ declare module "wxa-core/src/component/decorators" {
      * 组件装饰器
      * @param options 组件装饰器参数
      */
-    export function component<T = any>(options?: IComponentOptions<T>): (constructor: new (...args: any[]) => BaseComponent<any>) => void;
+    export function component<T = any>(options?: IComponentOptions<T>): (constructor: new (...args: any[]) => any) => void;
+    /**
+     * 为组件绑定自定义数据
+     */
+    export function bind(target: any, name: string): void;
+}
+declare module "wxa-core/src/component/base" {
+    /**
+     * 组件基础类型，可以被页面和组件共用
+     * Component data, including internal data and property values
+     */
+    export abstract class Base<D> implements Record<string, any> {
+        /**
+         * 创建一个 SelectorQuery 对象，选择器选取范围为这个组件实例内
+         */
+        createSelectorQuery: () => any;
+        /**
+         * 创建一个 IntersectionObserver 对象，选择器选取范围为这个组件实例内
+         */
+        createIntersectionObserver: () => any;
+        /**
+         * 组件数据，包括内部数据和属性值
+         */
+        data: D;
+        /**
+         * 组件的文件路径
+         */
+        is: string;
+        /**
+         * 节点id
+         */
+        id: string;
+        /**
+         * 节点dataset
+         */
+        dataset: string;
+        /**
+         * 获取这个关系所对应的所有关联节点，参见 组件间关系
+         */
+        getRelationNodes: (relationKey: string) => any;
+        /**
+         * 立刻执行 callback ，其中的多个 setData 之间不会触发界面绘制（只有某些特殊场景中需要，如用于在不同组件同时 setData 时进行界面绘制同步）
+         */
+        groupSetData: (callback: () => void) => void;
+        /**
+         * 检查组件是否具有 behavior （检查时会递归检查被直接或间接引入的所有behavior）
+         */
+        hasBehavior: (behavior: any) => boolean;
+        /**
+         * 使用选择器选择组件实例节点，返回匹配到的全部组件实例对象组成的数组
+         */
+        selectAllComponents: (selector: string) => any[];
+        /**
+         * 使用选择器选择组件实例节点，返回匹配到的第一个组件实例对象（会被 wx://component-export 影响）
+         */
+        selectComponent: (selector: string) => any;
+        /**
+         * 设置data并执行视图层渲染
+         * @param data 这次要改变的数据
+         * @param callback setData引起的界面更新渲染完毕后的回调函数
+         */
+        setData: <K extends keyof D>(data: D | Pick<D, K> | Record<string, any>, callback?: () => void) => void;
+        /**
+         * 触发事件，参见 组件事件
+         */
+        triggerEvent: (name: string, detail?: object, options?: object) => void;
+    }
+}
+declare module "wxa-core/src/component/component" {
+    import { Base } from "wxa-core/src/component/base";
+    /**
+     * 组件基础类型，包含组件所有可用的属性和方法
+     */
+    export abstract class BaseComponent<D = any> extends Base<D> implements Record<string, any> {
+        /**
+         * 类似于mixins和traits的组件间代码复用机制，参见 behaviors
+         */
+        behaviors?: string[];
+        /**
+         * 组件间关系定义，参见 组件间关系
+         */
+        relations?: object;
+        /**
+         * 组件接受的外部样式类，参见 外部样式类
+         */
+        externalClasses?: string[];
+        /**
+         * 一些选项（文档中介绍相关特性时会涉及具体的选项设置，这里暂不列举）
+         */
+        options?: object;
+        /**
+         * 组件生命周期声明对象，参见 组件生命周期
+         */
+        lifetimes?: object;
+        /**
+         * 组件所在页面的生命周期声明对象，支持页面的 show 、 hide 等生命周期，参见 组件生命周期
+         */
+        pageLifetimes?: object;
+        /**
+         * 定义段过滤器，用于自定义组件扩展，参见 自定义组件扩展
+         */
+        definitionFilter?: () => void;
+        /**
+         * 组件生命周期函数，在组件实例刚刚被创建时执行，注意此时不能调用 setData ，参见 组件生命周期
+         */
+        created?(): void;
+        /**
+         * 组件生命周期函数，在组件实例进入页面节点树时执行，参见 组件生命周期
+         */
+        attached?(): void;
+        /**
+         * 组件生命周期函数，在组件布局完成后执行，参见 组件生命周期
+         */
+        ready?(): void;
+        /**
+         * 组件生命周期函数，在组件实例被移动到节点树另一个位置时执行，参见 组件生命周期
+         */
+        moved?(): void;
+        /**
+         * 组件生命周期函数，在组件实例被从页面节点树移除时执行，参见 组件生命周期
+         */
+        detached?(): void;
+    }
 }
 declare module "wxa-core/src/component/index" {
-    export { component, method, observer } from "wxa-core/src/component/decorators";
+    export { bind, component, method, observer } from "wxa-core/src/component/decorators";
     export { BaseComponent } from "wxa-core/src/component/component";
     export { IComponentOptions } from "wxa-core/src/component/component.options.interface";
     export { IProperty } from "wxa-core/src/component/property.interface";
+}
+declare module "wxa-core/src/page/decorators" {
+    /**
+     * 页面装饰器
+     */
+    export function page(constructor: new (...args: any[]) => any): void;
 }
 declare module "wxa-core/src/page/page.type" {
     export interface ITabItemTapOption {
@@ -334,6 +342,10 @@ declare module "wxa-core/src/page/page" {
      */
     export abstract class BasePage<D = any> extends Base<D> implements Record<string, any> {
         /**
+         * 当前页面的页面参数
+         */
+        options: Record<string, string>;
+        /**
          * 当前页面的路径
          * The path to the current page
          */
@@ -379,13 +391,6 @@ declare module "wxa-core/src/page/page" {
          */
         onTabItemTap?(options?: ITabItemTapOption): void;
     }
-}
-declare module "wxa-core/src/page/decorators" {
-    import { BasePage } from "wxa-core/src/page/page";
-    /**
-     * 页面装饰器
-     */
-    export function page(constructor: new (...args: any[]) => BasePage): void;
 }
 declare module "wxa-core/src/page/index" {
     export { page } from "wxa-core/src/page/decorators";

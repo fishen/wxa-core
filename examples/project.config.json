@@ -18,7 +18,7 @@
 		"minified": true,
 		"newFeature": true,
 		"nodeModules": true,
-		"autoAudits": false
+		"autoAudits": true
 	},
 	"appid": "wx1271c6fd6ac2ad5d",
 	"condition": {}

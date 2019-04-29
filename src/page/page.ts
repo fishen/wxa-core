@@ -7,6 +7,10 @@ import { ICustomShareContent, IPageScrollOption, IShareAppMessageOption, ITabIte
  */
 export abstract class BasePage<D = any> extends Base<D> implements Record<string, any> {
   /**
+   * 当前页面的页面参数
+   */
+  public options: Record<string, string>;
+  /**
    * 当前页面的路径
    * The path to the current page
    */

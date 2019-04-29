@@ -9,6 +9,6 @@
   },
   "dependencies": {
     "auto-mapping": "^1.0.3",
-    "wxa-core": "file:../wxa-core-1.2.0.tgz"
+    "wxa-core": "file:../wxa-core-1.2.1.tgz"
   }
 }

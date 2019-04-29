@@ -1,5 +1,4 @@
 import { selectObject } from "../utils/object";
-import { BaseComponent } from "./component";
 import { IComponentOptions } from "./component.options.interface";
 
 declare function Component(options: any): void;
@@ -24,16 +23,34 @@ export function observer(fields: string) {
   };
 }
 
+const bindItemsSymbol = Symbol("bind item to component");
+
 /**
  * 组件装饰器
  * @param options 组件装饰器参数
  */
 export function component<T = any>(options?: IComponentOptions<T>) {
-  return function(constructor: new (...args: any[]) => BaseComponent) {
-    const instance = new constructor();
+  return function(constructor: new (...args: any[]) => any) {
+    const instance: any = new constructor();
+    const bindItems = constructor.prototype[bindItemsSymbol];
+    if (Array.isArray(bindItems)) {
+      const { created } = instance;
+      instance.created = function() {
+        bindItems.forEach((key) => this[key] = instance[key]);
+        if (typeof created === "function") { created.call(this); }
+      };
+    }
     const methods = (instance as any).methods || {};
     const result = selectObject(instance, (key) => key !== "constructor" && !(key in methods));
     Object.assign(result, options);
     Component(result);
   };
+}
+
+/**
+ * 为组件绑定自定义数据
+ */
+export function bind(target: any, name: string) {
+  target[bindItemsSymbol] = target[bindItemsSymbol] || [];
+  target[bindItemsSymbol].push(name);
 }

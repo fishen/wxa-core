@@ -13,7 +13,8 @@ export class HintComponent extends BaseComponent<{ message: string }>{
     setTimeout(() => this.setData({ message }), 3000);
   }
   @method
-  alert() {
+  alert(e: any, ownerInstance: any) {
+    console.log(e,ownerInstance);
     wx.showToast({ title: this.data.message })
   }
   @observer('message')
