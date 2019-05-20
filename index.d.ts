@@ -14,6 +14,18 @@ declare module "wxa-core/src/utils/object" {
     export function selectObject<T extends Record<string, any> = any>(obj: T, filter: string[] | Predicate<string>): Partial<T>;
     export {};
 }
+declare module "wxa-core/src/app/app.options" {
+    export interface IAppOptions {
+        /**
+         * 自定义应用构造函数，必须返回有一个有效的对象
+         */
+        ctor?: (object: Object) => object;
+    }
+}
+declare module "wxa-core/src/app/decorators" {
+    import { IAppOptions } from "wxa-core/src/app/app.options";
+    export function app(options?: IAppOptions): (constructor: new (...args: any[]) => any) => void;
+}
 declare module "wxa-core/src/app/app.type" {
     export interface ILaunchOptions {
         query: number;
@@ -47,7 +59,7 @@ declare module "wxa-core/src/app/app.type" {
 }
 declare module "wxa-core/src/app/app" {
     import { ILaunchShowOption, IPageNotFoundOption } from "wxa-core/src/app/app.type";
-    export abstract class BaseApp implements Record<string, any> {
+    export abstract class App implements Record<string, any> {
         /** 生命周期回调—监听小程序初始化
          *
          * 小程序初始化完成时触发，全局只触发一次。
@@ -81,21 +93,62 @@ declare module "wxa-core/src/app/app" {
         onPageNotFound?(options?: IPageNotFoundOption): void;
     }
 }
-declare module "wxa-core/src/app/annotations" {
-    import { BaseApp } from "wxa-core/src/app/app";
-    export function app(constructor: new (...args: any[]) => BaseApp): void;
-}
 declare module "wxa-core/src/app/index" {
-    export { app } from "wxa-core/src/app/annotations";
-    export { BaseApp } from "wxa-core/src/app/app";
+    export { app } from "wxa-core/src/app/decorators";
+    export { App } from "wxa-core/src/app/app";
 }
-declare module "wxa-core/src/component/property.interface" {
+declare module "wxa-core/src/utils/array" {
+    export function includes<T>(arr: T[], item: T): boolean;
+}
+declare module "wxa-core/src/common" {
+    /**
+     * 获取更新的属性
+     * @param computedProperties 需要计算的属性
+     */
+    export function getUpdateData(computedProperties: string[]): any;
+    /**
+     * 初始化数据，将计算属性和Data合并
+     * @param instance 页面或者组件实例
+     * @param computedProperties 需要计算的属性
+     * @param options 组件属性
+     */
+    export function initailComputedData(instance: any, computedProperties: string[], options?: Record<string, any>): void;
+    /**
+     * 重写setData方法
+     * @param computedProperties 需要计算的属性
+     */
+    export function overrideSetData(computedProperties: string[]): void;
+    /**
+     * 为指定实例对像设置属性
+     * @param instance
+     * @param target
+     */
+    export function setProperties(instance: any, target: any): (symbol: symbol, keyFormatter?: (key: string) => string) => string[];
+}
+declare module "wxa-core/src/constants" {
+    export const COMPUTED_DATA: any;
+    export const BINDS: any;
+    export const METHODS: any;
+    export const OBSERVERS: any;
+    export const LIFETIMES: any;
+    export const PAGE_LIFETIMES: any;
+}
+declare module "wxa-core/src/component/property" {
     type PropertyType = String | Number | Boolean | Object | any[] | null;
     export { PropertyType };
     /**
      * 组件属性
      */
     export interface IProperty<T> {
+        /**
+         * 属性被改变时执行的函数（可选），也可以写成在methods段中定义的方法名字符串, 如：'_propertyChange'
+         */
+        observer?: (this: T, newVal: any, oldVal: any, changedPath: string) => void;
+        /**
+         * 属性的类型（可以指定多个）
+         * 2.6.1
+         */
+        optionalTypes?: PropertyType[];
         /**
          * 类型（必填），目前接受的类型包括：String, Number, Boolean, Object, Array, null（表示任意类型）
          */
@@ -104,22 +157,53 @@ declare module "wxa-core/src/component/property.interface" {
          * 属性初始值（可选），如果未指定则会根据类型选择一个
          */
         value?: any;
-        /**
-         * 属性被改变时执行的函数（可选），也可以写成在methods段中定义的方法名字符串, 如：'_propertyChange'
-         */
-        observer?: (this: T, newVal: any, oldVal: any, changedPath: string) => void;
     }
 }
-declare module "wxa-core/src/component/component.options.interface" {
-    import { IProperty, PropertyType } from "wxa-core/src/component/property.interface";
+declare module "wxa-core/src/component/component.options" {
+    import { IProperty, PropertyType } from "wxa-core/src/component/property";
     /**
      * 组件装饰器参数
      */
     export interface IComponentOptions<T> extends Record<string, any> {
         /**
-         * 组件数据，包括内部数据和属性值（与 data 一致）
+         * 自定义组件构造函数，必须返回有一个有效的对象
          */
-        properties?: Record<string, IProperty<T> | PropertyType>;
+        ctor?: (object: Object) => object;
+        /**
+         * 组件生命周期声明对象
+         * 2.2.3
+         */
+        lifetimes?: {
+            /**
+             * 在组件实例刚刚被创建时执行
+             */
+            created?: (this: T) => void;
+            /**
+             * 在组件实例进入页面节点树时执行
+             */
+            attached?: (this: T) => void;
+            /**
+             * 在组件在视图层布局完成后执行
+             */
+            ready?: (this: T) => void;
+            /**
+             * 在组件实例被移动到节点树另一个位置时执行
+             */
+            moved?: (this: T) => void;
+            /**
+             * 在组件实例被从页面节点树移除时执行
+             */
+            detached?: (this: T) => void;
+            /**
+             * 每当组件方法抛出错误时执行
+             */
+            error?: (this: T, error: Object) => void;
+        };
+        /**
+         * 组件数据字段监听器，用于监听 properties 和 data 的变化
+         * 2.6.1
+         */
+        observers?: Record<string, (this: T, ...args: any[]) => void>;
         /**
          * 一些选项
          */
@@ -129,10 +213,35 @@ declare module "wxa-core/src/component/component.options.interface" {
              */
             multipleSlots?: boolean;
         };
+        /**
+         * 组件所在页面的生命周期声明对象
+         * 2.2.3
+         */
+        pageLifetimes?: {
+            /**
+             * 组件所在的页面被展示时执行
+             * 2.2.3
+             */
+            show?: (this: T) => void;
+            /**
+             * 组件所在的页面被隐藏时执行
+             * 2.2.3
+             */
+            hide?: (this: T) => void;
+            /**
+             * 组件所在的页面尺寸变化时执行
+             * 2.4.0
+             */
+            resize?: (this: T, size: Object) => void;
+        };
+        /**
+         * 组件数据，包括内部数据和属性值（与 data 一致）
+         */
+        properties?: Record<string, IProperty<T> | PropertyType>;
     }
 }
 declare module "wxa-core/src/component/decorators" {
-    import { IComponentOptions } from "wxa-core/src/component/component.options.interface";
+    import { IComponentOptions } from "wxa-core/src/component/component.options";
     /**
      * 将当前成员标记为组件的方法
      */
@@ -142,7 +251,7 @@ declare module "wxa-core/src/component/decorators" {
      * 从小程序基础库版本 2.6.1 开始支持。
      * @param fields 要监听字段，比如 'some.subfiel',仅使用通配符'**'可以监听全部。
      */
-    export function observer(fields: string): (target: any, name: string, descriptor: PropertyDescriptor) => void;
+    export function observer(fields: string): (target: any, name: string) => void;
     /**
      * 组件装饰器
      * @param options 组件装饰器参数
@@ -152,6 +261,18 @@ declare module "wxa-core/src/component/decorators" {
      * 为组件绑定自定义数据
      */
     export function bind(target: any, name: string): void;
+    /**
+     * 添加计算属性
+     */
+    export function computed(): (target: any, name: string, descriptor: PropertyDescriptor) => void;
+    /**
+     * 声明组件生命周期函数
+     */
+    export function lifetime(target: any, name: string, descriptor: PropertyDescriptor): void;
+    /**
+     * 声明组件所在页面的生命周期函数
+     */
+    export function pageLifetime(target: any, name: string, descriptor: PropertyDescriptor): void;
 }
 declare module "wxa-core/src/component/base" {
     /**
@@ -188,6 +309,10 @@ declare module "wxa-core/src/component/base" {
          */
         getRelationNodes: (relationKey: string) => any;
         /**
+         * 返回当前页面的 custom-tab-bar 的组件实例
+         */
+        getTabBar: () => any;
+        /**
          * 立刻执行 callback ，其中的多个 setData 之间不会触发界面绘制（只有某些特殊场景中需要，如用于在不同组件同时 setData 时进行界面绘制同步）
          */
         groupSetData: (callback: () => void) => void;
@@ -220,11 +345,11 @@ declare module "wxa-core/src/component/component" {
     /**
      * 组件基础类型，包含组件所有可用的属性和方法
      */
-    export abstract class BaseComponent<D = any> extends Base<D> implements Record<string, any> {
+    export abstract class Component<D = any> extends Base<D> implements Record<string, any> {
         /**
          * 类似于mixins和traits的组件间代码复用机制，参见 behaviors
          */
-        behaviors?: string[];
+        behaviors?: string[] | string;
         /**
          * 组件间关系定义，参见 组件间关系
          */
@@ -248,7 +373,7 @@ declare module "wxa-core/src/component/component" {
         /**
          * 定义段过滤器，用于自定义组件扩展，参见 自定义组件扩展
          */
-        definitionFilter?: () => void;
+        definitionFilter?: (...args: any[]) => void;
         /**
          * 组件生命周期函数，在组件实例刚刚被创建时执行，注意此时不能调用 setData ，参见 组件生命周期
          */
@@ -272,16 +397,25 @@ declare module "wxa-core/src/component/component" {
     }
 }
 declare module "wxa-core/src/component/index" {
-    export { bind, component, method, observer } from "wxa-core/src/component/decorators";
-    export { BaseComponent } from "wxa-core/src/component/component";
-    export { IComponentOptions } from "wxa-core/src/component/component.options.interface";
-    export { IProperty } from "wxa-core/src/component/property.interface";
+    export { bind, component, method, observer, computed, pageLifetime, lifetime } from "wxa-core/src/component/decorators";
+    export { Component } from "wxa-core/src/component/component";
+    export { IComponentOptions } from "wxa-core/src/component/component.options";
+    export { IProperty } from "wxa-core/src/component/property";
+}
+declare module "wxa-core/src/page/page.options" {
+    export interface IPageOptions {
+        /**
+         * 自定义页面构造函数，必须返回有一个有效的对象
+         */
+        ctor?: (object: object) => object;
+    }
 }
 declare module "wxa-core/src/page/decorators" {
+    import { IPageOptions } from "wxa-core/src/page/page.options";
     /**
      * 页面装饰器
      */
-    export function page(constructor: new (...args: any[]) => any): void;
+    export function page(options?: IPageOptions): (constructor: new (...args: any[]) => any) => void;
 }
 declare module "wxa-core/src/page/page.type" {
     export interface ITabItemTapOption {
@@ -340,7 +474,7 @@ declare module "wxa-core/src/page/page" {
      * 页面基础类型，包含所有的属性和方法
      * The base type of page which including all properties and methods
      */
-    export abstract class BasePage<D = any> extends Base<D> implements Record<string, any> {
+    export abstract class Page<D = any> extends Base<D> implements Record<string, any> {
         /**
          * 当前页面的页面参数
          */
@@ -394,9 +528,10 @@ declare module "wxa-core/src/page/page" {
 }
 declare module "wxa-core/src/page/index" {
     export { page } from "wxa-core/src/page/decorators";
-    export { BasePage } from "wxa-core/src/page/page";
+    export { Page } from "wxa-core/src/page/page";
 }
 declare module "wxa-core" {
+    import "reflect-metadata";
     export * from "wxa-core/src/app/index";
     export * from "wxa-core/src/component/index";
     export * from "wxa-core/src/page/index";

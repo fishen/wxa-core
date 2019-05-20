@@ -1,2 +1,2 @@
-export { app } from "./annotations";
-export { BaseApp } from "./app";
+export { app } from "./decorators";
+export { App } from "./app";

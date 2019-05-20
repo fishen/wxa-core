@@ -1,6 +1,6 @@
 import { ILaunchShowOption, IPageNotFoundOption } from "./app.type";
 
-export abstract class BaseApp implements Record<string, any> {
+export abstract class App implements Record<string, any> {
     /** 生命周期回调—监听小程序初始化
      *
      * 小程序初始化完成时触发，全局只触发一次。

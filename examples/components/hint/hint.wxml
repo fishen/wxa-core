@@ -1,1 +1,1 @@
-<text bind:tap="alert">{{message}}</text>
+<text bind:tap="alert">{{message}},{{currency}}</text>

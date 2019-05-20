@@ -1,4 +1,4 @@
-export { bind, component, method, observer } from "./decorators";
-export { BaseComponent } from "./component";
-export { IComponentOptions } from "./component.options.interface";
-export { IProperty } from "./property.interface";
+export { bind, component, method, observer, computed, pageLifetime, lifetime } from "./decorators";
+export { Component } from "./component";
+export { IComponentOptions } from "./component.options";
+export { IProperty } from "./property";

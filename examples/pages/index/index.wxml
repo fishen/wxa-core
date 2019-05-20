@@ -1,12 +1,14 @@
 <!-- index.wxml -->
 <view class="container">
   <hint message="{{message}}"></hint>
+  <hint message="{{message1}}"></hint>
 </view>
 <view class="title">Three ways to extend</view>
 <view class="extensions">
   <navigator url="/pages/extensions/inheritance/inheritance">Inheritance</navigator>
   <navigator url="/pages/extensions/decorators/decorators">Decorators</navigator>
   <navigator url="/pages/extensions/overrides/overrides">Overrides</navigator>
+  <navigator url="/pages/extensions/ctor/ctor">Ctor</navigator>
 </view>
 <view>
   <navigator url="/pages/component/component?a=1&b=2">Component</navigator>

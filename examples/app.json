@@ -3,12 +3,14 @@
     "pages/index/index",
     "pages/extensions/inheritance/inheritance",
     "pages/extensions/decorators/decorators",
-    "pages/extensions/overrides/overrides"
+    "pages/extensions/overrides/overrides",
+    "pages/extensions/ctor/ctor"
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "WeChat",
     "navigationBarTextStyle": "black"
-  }
+  },
+  "sitemapLocation": "sitemap.json"
 }

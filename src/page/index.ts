@@ -1,2 +1,2 @@
 export { page } from "./decorators";
-export { BasePage } from "./page";
+export { Page } from "./page";

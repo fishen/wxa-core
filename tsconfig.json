@@ -16,9 +16,10 @@
     ]
   },
   "include": [
-    "src/**/*.ts",
+    "**/*.ts",
   ],
   "exclude": [
+    "dist",
     "typings",
     "node_modules",
     "**/*.spec.ts",

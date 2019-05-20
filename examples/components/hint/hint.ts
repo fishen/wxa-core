@@ -1,12 +1,14 @@
+
+
 // components/hint/hint.ts
-import { BaseComponent, component, method, observer } from "wxa-core";
+import { Component, component, method, observer } from "wxa-core";
 
 @component({
   properties: {
-    message: String
+    message: String,
   }
 })
-export class HintComponent extends BaseComponent<{ message: string }>{
+export class HintComponent extends Component{
   attached() {
     console.log('hint component attached.')
     const message = 'Hi, message has been changed!';
@@ -14,7 +16,7 @@ export class HintComponent extends BaseComponent<{ message: string }>{
   }
   @method
   alert(e: any, ownerInstance: any) {
-    console.log(e,ownerInstance);
+    console.log(e, ownerInstance);
     wx.showToast({ title: this.data.message })
   }
   @observer('message')
@@ -23,3 +25,14 @@ export class HintComponent extends BaseComponent<{ message: string }>{
     // others
   }
 }
+
+// declare function Component(params: any): void;
+
+// Component({
+//   data: {
+//     first: "1"
+//   },
+//   attached() {
+//     console.log(this.data);
+//   }
+// })

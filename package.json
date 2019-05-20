@@ -1,26 +1,35 @@
 {
   "name": "wxa-core",
-  "version": "1.2.1",
+  "version": "2.0.0",
   "description": "Build and use WeChat miniprogram core function with typescript.",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "reflect-metadata": "^0.1.13"
+  },
   "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.6",
     "bundle-dts": "^1.0.3",
+    "chai": "^4.2.0",
     "gulp": "^4.0.0",
+    "mocha": "^6.1.4",
     "ts-loader": "^5.3.3",
+    "ts-node": "^8.1.0",
     "tslint": "^5.13.1",
     "typescript": "^3.3.3",
     "webpack": "^4.29.3",
-    "webpack-cli": "^3.2.3"
+    "webpack-cli": "^3.2.3",
+    "webpack-node-externals": "^1.7.2"
   },
   "scripts": {
-    "test": "webpack && mocha --require ts-node/register test/*.ts",
+    "test": "mocha --require ts-node/register test/*.ts",
     "ts": "ts-node",
     "lint": "tslint -c tslint.json 'src/**/*.ts' -p tsconfig.json",
     "dts": "gulp dts",
     "type-check:watch": "npm run lint -- --watch",
-    "build": "npm run lint&&npm run lint&&webpack&&npm run dts",
-    "fix": "tslint --fix 'src/**/*.ts'"
+    "build": "npm run fix&&npm run lint&&webpack&&npm run dts",
+    "fix": "tslint --fix 'src/**/*.ts'",
+    "pack": "npm run build&&npm pack"
   },
   "repository": {
     "type": "git",

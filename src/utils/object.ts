@@ -32,7 +32,7 @@ export function selectObject<T extends Record<string, any> = any
     if (typeof filter === "function") {
         const items = keysOf(obj, filter);
         return selectObject(obj, items);
-    } else if (Array.isArray(filter) && filter.length) {
+    } else if (Array.isArray(filter)) {
         return filter.reduce((result: any, key: string) => {
             if (key in obj) {
                 result[key] = obj[key];

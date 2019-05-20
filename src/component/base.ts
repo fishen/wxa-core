@@ -32,6 +32,10 @@ export abstract class Base<D> implements Record<string, any> {
    */
   public getRelationNodes: (relationKey: string) => any;
   /**
+   * 返回当前页面的 custom-tab-bar 的组件实例
+   */
+  public getTabBar: () => any;
+  /**
    * 立刻执行 callback ，其中的多个 setData 之间不会触发界面绘制（只有某些特殊场景中需要，如用于在不同组件同时 setData 时进行界面绘制同步）
    */
   public groupSetData: (callback: () => void) => void;

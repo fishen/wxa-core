@@ -1,4 +1,4 @@
-import { page, BasePage } from 'wxa-core';
+import { page, Page } from 'wxa-core';
 
 function preLoad(_target: any, _name: string, descriptor: PropertyDescriptor) {
   const raw = descriptor.value;
@@ -9,8 +9,8 @@ function preLoad(_target: any, _name: string, descriptor: PropertyDescriptor) {
   }
 }
 
-@page
-export class MyPage extends BasePage {
+@page()
+export class MyPage extends Page {
   @preLoad
   onLoad(_options: Record<string, string>) {
     console.log('decorators page loaded.');

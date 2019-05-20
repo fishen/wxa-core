@@ -1,4 +1,4 @@
-import { component, method, BaseComponent, bind } from 'wxa-core';
+import { component, method, Component, bind } from 'wxa-core';
 
 @component({
   properties: {
@@ -10,7 +10,7 @@ import { component, method, BaseComponent, bind } from 'wxa-core';
     }
   }
 })
-export class MyComponent extends BaseComponent {
+export class MyComponent extends Component {
   created() {
     console.log('created...');
     (this as any).__pageLifetimes__ = this.pageLifetimes;
