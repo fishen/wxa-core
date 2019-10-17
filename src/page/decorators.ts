@@ -1,5 +1,5 @@
-import { initailComputedData, overrideSetData, setProperties } from "../common";
-import { COMPUTED_DATA } from "../constants";
+import { initailComputedData, overrideSetData } from "../common";
+import { COMPUTED_DATA, HOOK_FUNC } from "../constants";
 import { includes } from "../utils/array";
 import { selectObject } from "../utils/object";
 import { IPageOptions } from "./page.options";
@@ -24,12 +24,15 @@ export function page(options?: IPageOptions) {
     }
     let pobj = selectObject(instance, (key) => key !== "constructor"
       && !includes(computes, key));
-    if (typeof options.ctor === "function") {
-      pobj = options.ctor(pobj);
-      if (typeof pobj !== "object") {
-        console.warn("Custom page's ctor must return a valid object.");
-      }
-    }
+    const hook = (page as any)[HOOK_FUNC];
+    pobj = typeof hook === "function" ? hook(pobj) : pobj;
+    pobj = typeof options.ctor === "function" ? options.ctor(pobj) : pobj;
     typeof Page === "function" && Page(pobj);
   };
 }
+/**
+ * 注册全局页面钩子函数
+ */
+page.registerHook = function(fn: (obj: any) => object) {
+  (page as any)[HOOK_FUNC] = fn;
+};

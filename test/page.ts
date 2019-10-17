@@ -10,6 +10,11 @@ Page.prototype.setData = function (data: object) {
     Object.assign(this.data, data);
 }
 
+page.registerHook(obj => {
+    obj.hook = 1;
+    return obj;
+})
+
 @page({
     ctor: function (obj: Page) {
         object = Object.assign({}, obj);
@@ -50,4 +55,7 @@ describe("page", () => {
         expect(createdObject.data.fullName).to.be.eq("Li Lee");
         expect(createdObject.data.adult).to.be.false;
     }).timeout(1000);
+    it("should hook success", () => {
+        expect(object.hook).to.be.eq(1);
+    })
 });

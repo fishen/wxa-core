@@ -10,6 +10,11 @@ Component.prototype.setData = function (data: object) {
     Object.assign(this.data, data);
 }
 
+component.registerHook(obj => {
+    obj.hook = 1;
+    return obj;
+})
+
 @component<MyComponent>({
     ctor: function (obj: Component) {
         object = Object.assign({}, obj);
@@ -121,4 +126,7 @@ describe("component", () => {
         createdObject.properties.amount.observer.call(createdObject);
         expect(object.data.currency).to.be.eq("$1000.00");
     }).timeout(1000);
+    it("should hook success", () => {
+        expect(object.hook).to.be.eq(1);
+    });
 });

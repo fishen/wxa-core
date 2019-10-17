@@ -132,6 +132,7 @@ declare module "wxa-core/src/constants" {
     export const OBSERVERS: any;
     export const LIFETIMES: any;
     export const PAGE_LIFETIMES: any;
+    export const HOOK_FUNC: any;
 }
 declare module "wxa-core/src/component/property" {
     type PropertyType = String | Number | Boolean | Object | any[] | null;
@@ -257,6 +258,9 @@ declare module "wxa-core/src/component/decorators" {
      * @param options 组件装饰器参数
      */
     export function component<T = any>(options?: IComponentOptions<T>): (constructor: new (...args: any[]) => any) => void;
+    export namespace component {
+        var registerHook: (fn: (obj: any) => object) => void;
+    }
     /**
      * 为组件绑定自定义数据
      */
@@ -416,6 +420,9 @@ declare module "wxa-core/src/page/decorators" {
      * 页面装饰器
      */
     export function page(options?: IPageOptions): (constructor: new (...args: any[]) => any) => void;
+    export namespace page {
+        var registerHook: (fn: (obj: any) => object) => void;
+    }
 }
 declare module "wxa-core/src/page/page.type" {
     export interface ITabItemTapOption {
@@ -531,7 +538,6 @@ declare module "wxa-core/src/page/index" {
     export { Page } from "wxa-core/src/page/page";
 }
 declare module "wxa-core" {
-    import "reflect-metadata";
     export * from "wxa-core/src/app/index";
     export * from "wxa-core/src/component/index";
     export * from "wxa-core/src/page/index";

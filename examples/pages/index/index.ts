@@ -2,10 +2,16 @@
 import { page, Page, computed } from 'wxa-core';
 import { IndexModel } from './model';
 
+page.registerHook((obj) => {
+  obj.hook = 1;
+  return obj;
+})
+
 @page()
 export class IndexPage extends Page<IndexModel> {
   data = new IndexModel();
   onLoad() {
+    console.log((this as any).hook);
     console.log('index page loaded.');
     setTimeout(() => {
       this.setData({ message: Math.random() });

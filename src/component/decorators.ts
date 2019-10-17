@@ -1,5 +1,5 @@
 import { initailComputedData, overrideSetData, setProperties } from "../common";
-import { BINDS, COMPUTED_DATA, LIFETIMES, METHODS, OBSERVERS, PAGE_LIFETIMES } from "../constants";
+import { BINDS, COMPUTED_DATA, HOOK_FUNC, LIFETIMES, METHODS, OBSERVERS, PAGE_LIFETIMES } from "../constants";
 import { includes } from "../utils/array";
 import { selectObject } from "../utils/object";
 import { IComponentOptions } from "./component.options";
@@ -70,15 +70,19 @@ export function component<T = any>(options?: IComponentOptions<T>) {
       && !includes(observers, key)
       && !includes(lifetimes, key)
       && !includes(pageLifetimes, key));
-    if (typeof options.ctor === "function") {
-      cobj = options.ctor(cobj);
-      if (typeof cobj !== "object") {
-        console.warn("Custom component's ctor must return a valid object.");
-      }
-    }
+    const hook = (component as any)[HOOK_FUNC];
+    cobj = typeof hook === "function" ? hook(cobj) : cobj;
+    cobj = typeof options.ctor === "function" ? options.ctor(cobj) : cobj;
     typeof Component === "function" && Component(cobj);
   };
 }
+
+/**
+ * 注册全局组件钩子函数
+ */
+component.registerHook = function(fn: (obj: any) => object) {
+  (component as any)[HOOK_FUNC] = fn;
+};
 
 /**
  * 为组件绑定自定义数据
