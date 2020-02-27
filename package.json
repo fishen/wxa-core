@@ -1,6 +1,6 @@
 {
   "name": "wxa-core",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Build and use WeChat miniprogram core function with typescript.",
   "main": "index.js",
   "dependencies": {},

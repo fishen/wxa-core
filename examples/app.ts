@@ -1,5 +1,3 @@
-declare const global: any;
-global.Reflect = global.Reflect || Reflect;
 import "reflect-metadata";
 import { App, app } from "wxa-core";
 

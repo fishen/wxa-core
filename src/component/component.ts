@@ -16,19 +16,28 @@ export abstract class Component<D = any> extends Base<D> implements Record<strin
    */
   public externalClasses?: string[];
   /**
+   * 组件数据字段监听器，用于监听 properties 和 data 的变化
+   * @since 2.6.1
+   * @see https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/observer.html
+   */
+  public observers?: object;
+  /**
    * 一些选项（文档中介绍相关特性时会涉及具体的选项设置，这里暂不列举）
    */
   public options?: object;
   /**
    * 组件生命周期声明对象，参见 组件生命周期
+   * @since 2.2.3
    */
   public lifetimes?: object;
   /**
    * 组件所在页面的生命周期声明对象，支持页面的 show 、 hide 等生命周期，参见 组件生命周期
+   * @since 2.2.3
    */
   public pageLifetimes?: object;
   /**
    * 定义段过滤器，用于自定义组件扩展，参见 自定义组件扩展
+   * @since 2.2.3
    */
   public definitionFilter?: (...args: any[]) => void;
   /**

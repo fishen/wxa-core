@@ -286,6 +286,23 @@ declare module "wxa-core/src/component/base" {
      */
     export abstract class Base<D> implements Record<string, any> {
         /**
+         * 执行关键帧动画
+         * @since 2.9.0
+         * @param selector 选择器（同 SelectorQuery.select 的选择器格式）
+         * @param keyframes 关键帧信息
+         * @param duration 动画持续时长（毫秒为单位）
+         * @param callback 动画完成后的回调函数
+         */
+        animate: (selector: string, keyframes: any[], duration: number, callback?: () => any) => any;
+        /**
+         * 清除关键帧动画
+         * @since 2.9.0
+         * @param selector 选择器（同 SelectorQuery.select 的选择器格式）
+         * @param options 需要清除的属性，不填写则全部清除
+         * @param callback 清除完成后的回调函数
+         */
+        clearAnimation: (selector: string, options?: object, callback?: () => any) => any;
+        /**
          * 创建一个 SelectorQuery 对象，选择器选取范围为这个组件实例内
          */
         createSelectorQuery: () => any;
@@ -310,15 +327,22 @@ declare module "wxa-core/src/component/base" {
          */
         dataset: string;
         /**
+         * 返回页面标识符（一个字符串），可以用来判断几个自定义组件实例是不是在同一个页面内
+         * @since 2.7.1
+         */
+        getPageId: () => string;
+        /**
          * 获取这个关系所对应的所有关联节点，参见 组件间关系
          */
         getRelationNodes: (relationKey: string) => any;
         /**
          * 返回当前页面的 custom-tab-bar 的组件实例
+         * @since 2.6.2
          */
         getTabBar: () => any;
         /**
          * 立刻执行 callback ，其中的多个 setData 之间不会触发界面绘制（只有某些特殊场景中需要，如用于在不同组件同时 setData 时进行界面绘制同步）
+         * @since 2.4.0
          */
         groupSetData: (callback: () => void) => void;
         /**
@@ -329,6 +353,11 @@ declare module "wxa-core/src/component/base" {
          * 使用选择器选择组件实例节点，返回匹配到的全部组件实例对象组成的数组
          */
         selectAllComponents: (selector: string) => any[];
+        /**
+         * 选取当前组件节点所在的组件实例（即组件的引用者），返回它的组件实例对象（会被 wx://component-export 影响）
+         * @since 2.8.2
+         */
+        selectOwnerComponent: () => any;
         /**
          * 使用选择器选择组件实例节点，返回匹配到的第一个组件实例对象（会被 wx://component-export 影响）
          */
@@ -364,19 +393,28 @@ declare module "wxa-core/src/component/component" {
          */
         externalClasses?: string[];
         /**
+         * 组件数据字段监听器，用于监听 properties 和 data 的变化
+         * @since 2.6.1
+         * @see https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/observer.html
+         */
+        observers?: object;
+        /**
          * 一些选项（文档中介绍相关特性时会涉及具体的选项设置，这里暂不列举）
          */
         options?: object;
         /**
          * 组件生命周期声明对象，参见 组件生命周期
+         * @since 2.2.3
          */
         lifetimes?: object;
         /**
          * 组件所在页面的生命周期声明对象，支持页面的 show 、 hide 等生命周期，参见 组件生命周期
+         * @since 2.2.3
          */
         pageLifetimes?: object;
         /**
          * 定义段过滤器，用于自定义组件扩展，参见 自定义组件扩展
+         * @since 2.2.3
          */
         definitionFilter?: (...args: any[]) => void;
         /**
