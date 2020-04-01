@@ -5,11 +5,11 @@ import { ICustomShareContent, IPageScrollOption, IShareAppMessageOption, ITabIte
  * 页面基础类型，包含所有的属性和方法
  * The base type of page which including all properties and methods
  */
-export abstract class Page<D = any> extends Base<D> implements Record<string, any> {
+export abstract class Page<D = any, O = Record<string, string>> extends Base<D> implements Record<string, any> {
   /**
    * 当前页面的页面参数
    */
-  public options: Record<string, string>;
+  public options: O;
   /**
    * 当前页面的路径
    * The path to the current page
