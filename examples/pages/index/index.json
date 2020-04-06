@@ -1,6 +1,0 @@
-{
-  "usingComponents": {
-    "hint": "../../../components/hint/hint",
-    "my-component": "../component/component"
-  }
-}
