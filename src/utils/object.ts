@@ -8,15 +8,13 @@ declare type Predicate<T> = (val: T) => boolean;
  */
 export function keysOf<T = any>(object: T, filter?: Predicate<string>): string[] {
     if (!object) { return []; }
-    const result = [];
-    for (const key in object) {
-        if (typeof filter === "function") {
-            if (filter(key)) {
-                result.push(key);
-            }
-        } else {
-            result.push(key);
-        }
+    const result: string[] = [];
+    let prototype = Object.getPrototypeOf(object);
+    const notexsits = (key: string) => result.indexOf(key) < 0;
+    filter = typeof filter === 'function' ? key => notexsits(key) && filter(key) : notexsits;
+    while (prototype && prototype !== Object.prototype) {
+        Object.getOwnPropertyNames(prototype).filter(filter).forEach(name => result.push(name));
+        prototype = Object.getPrototypeOf(prototype);
     }
     return result;
 }
